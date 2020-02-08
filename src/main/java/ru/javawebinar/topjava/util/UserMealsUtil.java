@@ -54,7 +54,8 @@ public class UserMealsUtil {
         Map<LocalDate, Integer> caloriesSumByDay = meals.stream().collect(Collectors.groupingBy(userMeal -> userMeal.getDateTime().toLocalDate(),
                 Collectors.summingInt(UserMeal::getCalories)));
 
-        return meals.stream().filter(userMeal -> userMeal.getDateTime().toLocalTime().isAfter(startTime) && userMeal.getDateTime().toLocalTime().isBefore(endTime))
+        return meals.stream()
+                .filter(userMeal -> TimeUtil.isBetweenInclusive(userMeal.getDateTime().toLocalTime(), startTime, endTime))
                 .sorted(Comparator.comparing(UserMeal::getDateTime))
                 .map(sortedMeal -> new UserMealWithExcess(sortedMeal.getDateTime(), sortedMeal.getDescription(), sortedMeal.getCalories(),
                         caloriesSumByDay.get(sortedMeal.getDateTime().toLocalDate()) > 2000))
